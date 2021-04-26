@@ -106,9 +106,12 @@ struct APIProvider<Source: EndPoint> {
                completion(.success(nil))
                return
             }
-
-            let result = try? JSONDecoder().decode(T.self, from: data)
-            completion(.success(result))
+            do {
+               let result = try JSONDecoder().decode(T.self, from: data)
+               completion(.success(result))
+            } catch {
+               completion(.failure(.decodeError))
+            }
          }
          .resume()
       } catch {
